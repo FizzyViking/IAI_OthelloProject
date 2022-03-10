@@ -4,21 +4,25 @@ import java.util.ArrayList;
 public class Node{
 	int value;
 	GameState state;
+	Position position;
 	ArrayList<Node> branches;
 
-	public Node(GameState _state)
+	public Node(GameState _state, Position pos, int depth)
 	{
 		value = -1;
 		state = _state;
 		branches = new ArrayList<Node>();
+		position = pos;
+		generateBranches(depth);
 	}
-	public void generateBranches()
+	public void generateBranches(int depth)
 	{
+		if(depth<1 || branches.size() != 0) return; //if the recursion has reached the given depth or if the node already has branches, it will not generate any further
 		for(Position p : state.legalMoves())
 		{
 			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
-			branches.add(new Node(s));
+			Node n = new Node(s,p,depth-1);
 		}
 	}
 
