@@ -13,7 +13,7 @@ public class NotAsDumAI implements IOthelloAI{
 	 */
 	public Tree T;
 	public Position decideMove(GameState s){
-		if(T == null) T = new Tree(s);
+		T = new Tree(s);
 		T.update(s);
 		return T.BestMove();
 	}

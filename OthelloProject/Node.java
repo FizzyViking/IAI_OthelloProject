@@ -14,6 +14,7 @@ public class Node{
 		branches = new ArrayList<Node>();
 		position = pos;
 		generateBranches(depth);
+
 	}
 	public void generateBranches(int depth)
 	{
@@ -23,6 +24,7 @@ public class Node{
 			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
 			Node n = new Node(s,p,depth-1);
+			branches.add(n);
 		}
 	}
 
