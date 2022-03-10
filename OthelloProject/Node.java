@@ -6,7 +6,7 @@ public class Node{
 	GameState state;
 	ArrayList<Node> branches;
 
-	public node(GameState _state)
+	public Node(GameState _state)
 	{
 		value = -1;
 		state = _state;
@@ -14,11 +14,11 @@ public class Node{
 	}
 	public void generateBranches()
 	{
-		for(Position p : legalMoves())
+		for(Position p : state.legalMoves())
 		{
-			GameState s = new GameState(state.getBoard, state.getPlayerInTurn);
+			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
-			branches.Add(new Node(s));
+			branches.add(new Node(s));
 		}
 	}
 
@@ -29,9 +29,9 @@ public class Node{
 			return value;
 		}
 
-		if(branches.size == 0)
+		if(branches.size() == 0)
 		{
-			return state.countTokens()[color-1]
+			return state.countTokens()[color-1];
 		}
 
 		int val = 0;
@@ -40,7 +40,7 @@ public class Node{
 			val = 0;
 		}else
 		{
-			val = state.size;
+			val = 42069360;
 		}
 		for(Node n : branches)
 		{
@@ -50,7 +50,7 @@ public class Node{
 				val = tempval;
 			}
 		}
-		value = tempval;
+		value = val;
 		return value;
 	}
 }
