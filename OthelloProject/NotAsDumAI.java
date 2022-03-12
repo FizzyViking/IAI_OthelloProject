@@ -34,7 +34,7 @@ public class NotAsDumAI implements IOthelloAI{
 
 		if (state.legalMoves().size() == 0) {
 			// Terminate
-			Eval(isMax, state);
+			return Eval(isMax, state);
 		}
 
 		int alpha = _alpha;
@@ -42,16 +42,17 @@ public class NotAsDumAI implements IOthelloAI{
 		int value = Integer.MIN_VALUE;
 		Position newMove = null;
 
+		// Go through all the legal moves
 		for (Position p : state.legalMoves()) {
 
 			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
 
-			Pos max = MinValue(s, alpha, beta, !isMax);
+			Pos next = MinValue(s, alpha, beta, !isMax);
 
-			if (max.getUtilValue() > value) {
-				value = max.getUtilValue();
-				alpha = Math.min(beta, value);
+			if (next.getUtilValue() > value) {
+				value = next.getUtilValue();
+				alpha = Math.min(alpha, value);
 				newMove = p;
 			}
 			if (value <= beta) {
@@ -66,7 +67,7 @@ public class NotAsDumAI implements IOthelloAI{
 
 		if (state.legalMoves().size() == 0) {
 			// Terminate
-			Eval(isMax, state);
+			return Eval(isMax, state);
 		}
 
 		int alpha = _alpha;
@@ -79,10 +80,10 @@ public class NotAsDumAI implements IOthelloAI{
 			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
 
-			Pos max = MaxValue(s, alpha, beta, !isMax);
+			Pos next = MaxValue(s, alpha, beta, !isMax);
 
-			if (max.getUtilValue() < value) {
-				value = max.getUtilValue();
+			if (next.getUtilValue() < value) {
+				value = next.getUtilValue();
 				beta = Math.min(beta, value);
 				newMove = p;
 			}
