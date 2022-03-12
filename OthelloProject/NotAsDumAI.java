@@ -3,127 +3,117 @@ import java.util.ArrayList;
 /**
  * A simple OthelloAI-implementation. The method to decide the next move just
  * returns the first legal move that it finds. 
- * @author Mai Ajspur
+ * @author Mai Ajspur og mig
  * @version 9.2.2018
  */
 public class NotAsDumAI implements IOthelloAI{
 
-	/**
-	 * Returns first legal move
-	 */
-	public Tree T;
-
-	@Override
 	public Position decideMove(GameState s){
-		// T = new Tree(s);
-		// return T.BestMove();
+		System.out.println("NotAsDumbAI choosing");
 
-		// Check player turn
-		boolean isMax;
-		if (s.getPlayerInTurn() == 1) {
-			isMax = true;
-		} else {
-			isMax = false;
-		}
+		var startTime = System.nanoTime();
+		var pos =  MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, 6, s.getPlayerInTurn()).getPos();
+		var endTime = System.nanoTime();
+		System.out.println("NotAsDumbAI chooses: " + pos.toString());
+		System.out.println("It took " + ((endTime-startTime)/1_000_000_000) + " seconds");
 
-		// Find the most optimal move using minmax
-		Pos max = MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax);
-		return max.getMove();
+		return pos;
 	}
 
-	public Pos MaxValue (GameState state, int _alpha, int _beta, boolean isMax) {
+	public int CalculateScore(GameState state, int playerID){
+		if (playerID == 1){
+			return state.countTokens()[0] - state.countTokens()[1];
+		}else {
+			return state.countTokens()[1] - state.countTokens()[0];
+		}
+	}
 
-		if (state.legalMoves().size() == 0) {
-			// Terminate
-			return Eval(isMax, state);
+	public Pos MaxValue(GameState state, int alpha, int beta, int depth, int playerID){
+		var legalMoves = state.legalMoves();
+		if (legalMoves.isEmpty() || depth < 1 ){
+			return new Pos(CalculateScore(state, playerID), null);
+			/*GameState temp = new GameState(state.getBoard(), state.getPlayerInTurn() == 1 ? 2 : 1);
+			if (temp.legalMoves().isEmpty()){
+			}
+			else {
+				legalMoves.add(new Position(-1,-1));
+			}*/
 		}
 
-		int alpha = _alpha;
+		Position nextMove = null;
 		int value = Integer.MIN_VALUE;
-		Position newMove = null;
 
-		// Go through all the legal moves
-		for (Position p : state.legalMoves()) {
+		for (Position a : legalMoves) {
 
-			// Gamestate of the next move
-			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
-			s.insertToken(p);
+			GameState _state = new GameState(state.getBoard(), state.getPlayerInTurn());
+			_state.insertToken(a);
 
-			// Next move from Min
-			Pos next = MinValue(s, alpha, _beta, !isMax);
+			Pos next = MinValue(_state, alpha, beta, depth-1, playerID);
 
-			if (next.getUtilValue() > value) {
-				value = next.getUtilValue();
+			if (next.getUtil() > value) {
+				value = next.getUtil();
 				alpha = Math.max(alpha, value);
-				newMove = p;
+				nextMove = a;
 			}
-			if (value >= _beta) {
-				// Cut off
-				return new Pos(value, newMove);
+			if (value >= beta) {
+				return new Pos(value, nextMove);
 			}
 		}
-		return new Pos(value, newMove);
+		return new Pos(value, nextMove);
 	}
 
-	public Pos MinValue (GameState state, int _alpha, int _beta, boolean isMax) {
+	public Pos MinValue(GameState state, int alpha, int beta, int depth, int playerID) {
+		var legalMoves = state.legalMoves();
+		if (legalMoves.isEmpty() || depth < 1 ){
+			return new Pos(CalculateScore(state, playerID), null);
+			//GameState temp = new GameState(state.getBoard(), state.getPlayerInTurn() == 1 ? 2 : 1);
+			//if (temp.legalMoves().isEmpty()){
 
-		if (state.legalMoves().size() == 0) {
-			// Terminate
-			return Eval(isMax, state);
+			/*}
+			else {
+				legalMoves.add(new Position(-1,-1));
+			}*/
 		}
 
-		int beta = _beta;
+		Position nextMove = null;
 		int value = Integer.MAX_VALUE;
-		Position newMove = null;
 
-		for (Position p : state.legalMoves()) {
+		for (Position a : state.legalMoves()) {
 
-			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
-			s.insertToken(p);
+			GameState sim = new GameState(state.getBoard(), state.getPlayerInTurn());
+			sim.insertToken(a);
 
-			Pos next = MaxValue(s, _alpha, beta, !isMax);
+			Pos next = MaxValue(sim, alpha, beta, depth-1, playerID);
 
-			if (next.getUtilValue() < value) {
-				value = next.getUtilValue();
+			if (next.getUtil() < value) {
+				value = next.getUtil();
 				beta = Math.min(beta, value);
-				newMove = p;
+				nextMove = a;
 			}
-			if (value <= _alpha) {
-				// Cut off
-				return new Pos(value, newMove);
+			if (value <= alpha) {
+				return new Pos(value, nextMove);
 			}
 		}
-		return new Pos(value, newMove);
-	}
-
-	private Pos Eval (boolean isMax, GameState state) {
-		int[] score = state.countTokens();
-		int status;
-
-		// Difference in white and black tokens used as evaluation
-		if (isMax) {
-			status = score[0] - score[1];
-		} else {
-			status = score[1] - score[0];
-		}
-		return new Pos(status, null);
+		return new Pos(value, nextMove);
 	}
 
 	class Pos {
-		private int utilValue;
-		private Position move;
+		int util;
+		Position pos;
 
-		public Pos (int util, Position _move) {
-			this.utilValue = util;
-			this.move = _move;
+		public Pos (int _util, Position _pos) {
+			this.util = _util;
+			this.pos = _pos;
 		}
 
-		public int getUtilValue() {
-			return utilValue;
+		public int getUtil()
+		{
+			return util;
 		}
 
-		public Position getMove() {
-			return move;
+		public Position getPos()
+		{
+			return pos;
 		}
 	}
 }
