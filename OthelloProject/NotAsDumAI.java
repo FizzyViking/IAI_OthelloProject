@@ -18,6 +18,7 @@ public class NotAsDumAI implements IOthelloAI{
 		// T = new Tree(s);
 		// return T.BestMove();
 
+		// Check player turn
 		boolean isMax;
 		if (s.getPlayerInTurn() == 1) {
 			isMax = true;
@@ -25,10 +26,10 @@ public class NotAsDumAI implements IOthelloAI{
 			isMax = false;
 		}
 
+		// Find the most optimal move using minmax
 		Pos max = MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax);
 		return max.getMove();
 	}
-
 
 	public Pos MaxValue (GameState state, int _alpha, int _beta, boolean isMax) {
 
@@ -38,24 +39,25 @@ public class NotAsDumAI implements IOthelloAI{
 		}
 
 		int alpha = _alpha;
-		int beta = _beta;
 		int value = Integer.MIN_VALUE;
 		Position newMove = null;
 
 		// Go through all the legal moves
 		for (Position p : state.legalMoves()) {
 
+			// Gamestate of the next move
 			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
 
-			Pos next = MinValue(s, alpha, beta, !isMax);
+			// Next move from Min
+			Pos next = MinValue(s, alpha, _beta, !isMax);
 
 			if (next.getUtilValue() > value) {
 				value = next.getUtilValue();
-				alpha = Math.min(alpha, value);
+				alpha = Math.max(alpha, value);
 				newMove = p;
 			}
-			if (value <= beta) {
+			if (value >= _beta) {
 				// Cut off
 				return new Pos(value, newMove);
 			}
@@ -70,7 +72,6 @@ public class NotAsDumAI implements IOthelloAI{
 			return Eval(isMax, state);
 		}
 
-		int alpha = _alpha;
 		int beta = _beta;
 		int value = Integer.MAX_VALUE;
 		Position newMove = null;
@@ -80,14 +81,14 @@ public class NotAsDumAI implements IOthelloAI{
 			GameState s = new GameState(state.getBoard(), state.getPlayerInTurn());
 			s.insertToken(p);
 
-			Pos next = MaxValue(s, alpha, beta, !isMax);
+			Pos next = MaxValue(s, _alpha, beta, !isMax);
 
 			if (next.getUtilValue() < value) {
 				value = next.getUtilValue();
 				beta = Math.min(beta, value);
 				newMove = p;
 			}
-			if (value <= alpha) {
+			if (value <= _alpha) {
 				// Cut off
 				return new Pos(value, newMove);
 			}
