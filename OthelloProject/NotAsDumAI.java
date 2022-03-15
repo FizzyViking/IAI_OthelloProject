@@ -16,10 +16,10 @@ public class NotAsDumAI implements IOthelloAI{
 
         // start and endTime calculates the time it takes for the algorithm to return the best move
         var startTime = System.nanoTime();
-        var pos =  MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, 6, s.getPlayerInTurn()).getPos();
+        var pos =  MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, s.getPlayerInTurn()).getPos();
         var endTime = System.nanoTime();
         System.out.println("NotAsDumbAI chooses: " + pos.toString());
-        System.out.println("It took " + ((endTime-startTime)/1_000_000_000) + " seconds");
+        System.out.println("It took " + ((endTime-startTime)/1_000_000) + " seconds");
 
         return pos;
     }
