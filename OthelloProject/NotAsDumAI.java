@@ -5,8 +5,6 @@ import java.util.ArrayList;
  * returns the best move determined by the minmax algorithm
  * and terminates if there are no legal moves left
  * or if the depth limit has been reached
- * @author Mai Ajspur og mig
- * @version 9.2.2018
  */
 public class NotAsDumAI implements IOthelloAI{
 
