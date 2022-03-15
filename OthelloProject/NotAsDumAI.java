@@ -10,9 +10,13 @@ import java.util.ArrayList;
  */
 public class NotAsDumAI implements IOthelloAI{
 
+    /**
+     * Returns the best legal move determined by the minmax algorithm
+     */
     public Position decideMove(GameState s){
         System.out.println("NotAsDumbAI choosing");
 
+        // start and endTime calculates the time it takes for the algorithm to return the best move
         var startTime = System.nanoTime();
         var pos =  MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, 6, s.getPlayerInTurn()).getPos();
         var endTime = System.nanoTime();
@@ -22,6 +26,10 @@ public class NotAsDumAI implements IOthelloAI{
         return pos;
     }
 
+    /**
+     * Evaluates the state by calculating the number of black tokens
+     * subtracted from the number of white tokens
+     */
     public int CalculateScore(GameState state, int playerID){
         if (playerID == 1){
             return state.countTokens()[0] - state.countTokens()[1];
@@ -30,6 +38,9 @@ public class NotAsDumAI implements IOthelloAI{
         }
     }
 
+    /**
+     * Returns the Pos (move and utility) for Max
+     */
     public Pos MaxValue(GameState state, int alpha, int beta, int depth, int playerID){
         var legalMoves = state.legalMoves();
         if (legalMoves.isEmpty() || depth < 1 ){
@@ -58,6 +69,9 @@ public class NotAsDumAI implements IOthelloAI{
         return new Pos(value, nextMove);
     }
 
+    /**
+     * Returns the Pos (move and utility) for Min
+     */
     public Pos MinValue(GameState state, int alpha, int beta, int depth, int playerID) {
         var legalMoves = state.legalMoves();
         if (legalMoves.isEmpty() || depth < 1 ){
