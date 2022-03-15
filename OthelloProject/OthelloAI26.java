@@ -1,12 +1,10 @@
-import java.util.ArrayList;
-
 /**
  * A minmax implementation of an Othello AI The method to decide the next move
  * returns the best move determined by the minmax algorithm
  * and terminates if there are no legal moves left
  * or if the depth limit has been reached
  */
-public class NotAsDumAI implements IOthelloAI{
+public class OthelloAI26 implements IOthelloAI{
 
     /**
      * Returns the best legal move determined by the minmax algorithm
