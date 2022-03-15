@@ -42,6 +42,8 @@ public class NotAsDumAI implements IOthelloAI{
      * Returns the Pos (move and utility) for Max
      */
     public Pos MaxValue(GameState state, int alpha, int beta, int depth, int playerID){
+
+        //If no legal moves are available or if the depth limit has been reached terminate
         var legalMoves = state.legalMoves();
         if (legalMoves.isEmpty() || depth < 1 ){
             return new Pos(CalculateScore(state, playerID), null);
@@ -50,18 +52,24 @@ public class NotAsDumAI implements IOthelloAI{
         Position nextMove = null;
         int value = Integer.MIN_VALUE;
 
+        // For each legal move at the current gamestate
         for (Position a : legalMoves) {
 
+            // Make a new gamestate with the move a applied
             GameState _state = new GameState(state.getBoard(), state.getPlayerInTurn());
             _state.insertToken(a);
 
+            // Get the next move and util for Min
             Pos next = MinValue(_state, alpha, beta, depth-1, playerID);
 
+            // If the utility for Min's move is higher than our current value
+            // Set our value to Min's move utility and set alpha to the max between alpha and the value
             if (next.getUtil() > value) {
                 value = next.getUtil();
                 alpha = Math.max(alpha, value);
                 nextMove = a;
             }
+            // If the value is higher or equal to beta, cut off here and return the move
             if (value >= beta) {
                 return new Pos(value, nextMove);
             }
@@ -100,7 +108,10 @@ public class NotAsDumAI implements IOthelloAI{
         return new Pos(value, nextMove);
     }
 
-    class Pos {
+    /**
+     * Class representing a move + the utility for that move
+     */
+    static class Pos {
         int util;
         Position pos;
 
