@@ -19,7 +19,7 @@ public class NotAsDumAI implements IOthelloAI{
         var pos =  MaxValue(s, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, s.getPlayerInTurn()).getPos();
         var endTime = System.nanoTime();
         System.out.println("NotAsDumbAI chooses: " + pos.toString());
-        System.out.println("It took " + ((endTime-startTime)/1_000_000) + " seconds");
+        System.out.println("It took " + ((endTime-startTime)/1_000_000) + " milliseconds");
 
         return pos;
     }
