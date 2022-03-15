@@ -25,8 +25,8 @@ public class NotAsDumAI implements IOthelloAI{
     }
 
     /**
-     * Evaluates the state by calculating the number of black tokens
-     * subtracted from the number of white tokens
+     * Evaluates the state by calculating the number AIs tokens
+     * subtracted from the number of opponets tokens.
      */
     public int CalculateScore(GameState state, int playerID){
         if (playerID == 1){
@@ -37,7 +37,7 @@ public class NotAsDumAI implements IOthelloAI{
     }
 
     /**
-     * Returns the Pos (move and utility) for Max
+     * Returns the best Pos (move and utility) for Max aka the AI
      */
     public Pos MaxValue(GameState state, int alpha, int beta, int depth, int playerID){
 
@@ -76,7 +76,7 @@ public class NotAsDumAI implements IOthelloAI{
     }
 
     /**
-     * Returns the Pos (move and utility) for Min
+     * Returns the best Pos (move and utility) for Min aka the opponent
      */
     public Pos MinValue(GameState state, int alpha, int beta, int depth, int playerID) {
         var legalMoves = state.legalMoves();
